@@ -1,3 +1,4 @@
+
 public class Card {
     private String color;
     private String shape;
@@ -22,8 +23,8 @@ public class Card {
         for (int i = 0; i < cardLength; i++){
             if(i % 3 == 0){
                 String line = "";
-                int length = cardDetail[cardDetailIndex].toString().length();
-                int before = 0;
+                double length = cardDetail[cardDetailIndex].toString().length();
+                int before = ((cardWidth - length) % 2 == 0) ? (int)(length / 2) : (int)Math.ceil(length / 2);
                 int after = 0;
                 for (int j = 0; j < cardWidth; j++){
                     line 
