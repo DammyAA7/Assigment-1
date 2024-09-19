@@ -12,7 +12,7 @@ public class Card {
 
 
     public String getCard(String color, String shape, int number){
-        String card = "##############";
+        String card = "";
         int cardLength = 12;
         int cardWidth = 12;
         Object[] cardDetail = new Object[3];
@@ -21,30 +21,24 @@ public class Card {
         cardDetail[1] = new String(shape);
         int cardDetailIndex = 0;
         for (int i = 0; i < cardLength; i++){
-            if(i % 3 == 0){
-                String line = "";
-                double length = cardDetail[cardDetailIndex].toString().length();
-                int before = ((cardWidth - length) % 2 == 0) ? (int)(length / 2) : (int)Math.ceil(length / 2);
-                int after = 0;
-                for (int j = 0; j < cardWidth; j++){
-                    line 
+            if(i == 0 || (i % 11) == 0){
+                card +=        "##############\n";
+            }
+            else if(i % 3 == 0){
+                StringBuilder spaces = new StringBuilder();
+                double length  = 10 - cardDetail[cardDetailIndex].toString().length();
+                length = length % 2 != 0 ? Math.ceil(length / 2) : length / 2;
+                System.out.println(length);
+                for (int j = 0; i < (int) length; j++) {
+                    spaces.append(' ');
                 }
-
+                card +="#"+spaces.toString()+cardDetail[cardDetailIndex]+spaces.toString()+"#\n";
                 cardDetailIndex++;
-
+            } else{
+                card +="#            #\n";
             }
 
         }
-        card +=       "#            #";
-        card +=       "#            #";
-        card +=       "#            #";
-        card +=       "#            #";
-        card +=       "#   "+color+"      #"; 
-        card +=       "#            #";
-        card +=       "#            #";
-        card +=       "#            #";
-        card +=       "#            #";
-        card +=        "##############";
         return card;
 
     }

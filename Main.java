@@ -1,18 +1,11 @@
 public class Main {
     public static void main(String args[]) {
-        String card = "##############";
-        card +=       "\n#            #";
-        card +=       "\n#            #";
-        card +=       "\n#            #";
-        card +=       "\n#            #";
-        card +=       "\n#   "+"COlor"+"      #"; 
-        card +=       "\n#            #";
-        card +=       "\n#            #";
-        card +=       "\n#            #";
-        card +=       "\n#            #";
-        card +=        "\n##############";
+        Card card = new Card("Red", "Spades", 2);
 
-        System.out.println(card);
+        //card.getCard("Red", "Spades", 2);
+        
+
+        System.out.println(card.getCard("Red", "Spades", 2));
 
     }
 }
