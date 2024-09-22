@@ -2,9 +2,9 @@
 public class Card {
     private String color;
     private String shape;
-    private int number;
+    private String number;
 
-    public Card(String color, String shape, int number){
+    public Card(String color, String shape, String number){
         this.color = color;
         this.shape = shape;
         this.number = number;
