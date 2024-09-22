@@ -11,35 +11,31 @@ public class Card {
     }
 
 
-    public String getCard(String color, String shape, int number){
+    public String getCard() {
         String card = "";
-        int cardLength = 12;
-        int cardWidth = 12;
+        int cardLength = 12;  // Height of the card
+        int cardWidth = 15;  // Height of the card
         Object[] cardDetail = new Object[3];
-        cardDetail[0] = new String(color);
-        cardDetail[2] = new Integer(number);
-        cardDetail[1] = new String(shape);
-        int cardDetailIndex = 0;
-        for (int i = 0; i < cardLength; i++){
-            if(i == 0 || (i % 11) == 0){
-                card +=        "##############\n";
-            }
-            else if(i % 3 == 0){
-                StringBuilder spaces = new StringBuilder();
-                double length  = 10 - cardDetail[cardDetailIndex].toString().length();
-                length = length % 2 != 0 ? Math.ceil(length / 2) : length / 2;
-                System.out.println(length);
-                for (int j = 0; i < (int) length; j++) {
-                    spaces.append(' ');
-                }
-                card +="#"+spaces.toString()+cardDetail[cardDetailIndex]+spaces.toString()+"#\n";
-                cardDetailIndex++;
-            } else{
-                card +="#            #\n";
-            }
+        cardDetail[0] = this.color;
+        cardDetail[1] = this.shape;
+        cardDetail[2] = this.number;
 
+        int cardDetailIndex = 0;
+        for (int i = 0; i < cardLength; i++) {
+            if (i == 0 || i == cardLength - 1) {
+                card += "##################\n";  // Top and bottom border
+            } else if (i % 3 == 0 && cardDetailIndex < cardDetail.length) {
+                String detail = cardDetail[cardDetailIndex].toString();
+                int paddingFront = (int) Math.ceil((cardWidth - detail.length()) / 2); // Calculate padding on front side
+                int paddingBack = (int) Math.floor((cardWidth - detail.length()) / 2); // Calculate padding on back side
+                paddingFront = (detail.length() % 2 == 0) ? paddingBack : paddingBack + 1;
+                String paddedDetail = String.format("#%" + paddingFront + "s%s%" + paddingBack + "s#\n", "", detail, "");
+                card += paddedDetail;
+                cardDetailIndex++;
+            } else {
+                card += "#                #\n";  // Empty row
+            }
         }
         return card;
-
     }
 }
