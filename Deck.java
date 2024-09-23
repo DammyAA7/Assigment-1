@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Random;
 import java.util.ArrayList; // import the ArrayList class
 
 
@@ -27,10 +28,28 @@ public class Deck {
         }
     }
 
+    public void shuffleDeck(){
+        Random rnd = new Random();
+        for (int i = cards.size() - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+
+            Card card = cards.get(index);
+            cards.set(index, cards.get(i));
+            cards.set(i, card);
+        }
+        for (int i = cards.size() - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+
+            Card card = cards.get(index);
+            cards.set(index, cards.get(i));
+            cards.set(i, card);
+        }
+    }
+
     // Method to get all cards
     public List<Card> getCards() {
         return cards;
     }
-
-    
 }

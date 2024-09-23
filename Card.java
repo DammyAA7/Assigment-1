@@ -14,7 +14,7 @@ public class Card {
     public String getCard() {
         String card = "";
         int cardLength = 12;  // Height of the card
-        int cardWidth = 15;  // Height of the card
+        int cardWidth = 16;  // Height of the card
         Object[] cardDetail = new Object[3];
         cardDetail[0] = this.color;
         cardDetail[1] = this.shape;
