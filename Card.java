@@ -1,13 +1,13 @@
 
 public class Card {
     private String color;
-    private String shape;
-    private String number;
+    private String suit;
+    private String rank;
 
-    public Card(String color, String shape, String number){
+    public Card(String color, String suit, String rank){
         this.color = color;
-        this.shape = shape;
-        this.number = number;
+        this.suit = suit;
+        this.rank = rank;
     }
 
 
@@ -17,8 +17,8 @@ public class Card {
         int cardWidth = 16;  // Height of the card
         Object[] cardDetail = new Object[3];
         cardDetail[0] = this.color;
-        cardDetail[1] = this.shape;
-        cardDetail[2] = this.number;
+        cardDetail[1] = this.suit;
+        cardDetail[2] = this.rank;
 
         int cardDetailIndex = 0;
         for (int i = 0; i < cardLength; i++) {

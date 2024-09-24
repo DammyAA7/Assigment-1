@@ -1,18 +1,24 @@
-import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
-    public static void main(String args[]) {
-        int[] solutionArray = { 1, 2, 3, 4, 5, 6, 16, 15, 14, 13, 12, 11 };
+    public static void main(String args[]) {  
+        Deck deck = new Deck();
 
-        //card.getCard("Red", "Spades", 2);
+        //deck.showDeck();
+        deck.shuffleDeck();
+        
+        List<List<Card>> piles = deck.distributeCards();
+        List<Card> shuffledDeck = deck.getCards();
         
 
-        Deck deck = new Deck();
-        deck.showDeck();  // Display the entire deck
-
-        deck.shuffleDeck();
-
-        deck.showDeck();
+        for(int i = 0; i < piles.size(); i++){
+            System.out.println("\rPile " + (i + 1));
+            for(int j = 0; j < piles.get(i).size(); j++){
+                deck.showCard((piles.get(i)).get(j));
+                System.out.print(" ");
+            }
+        }
 
 
     }

@@ -8,16 +8,21 @@ public class Deck {
 
     public Deck() {
         this.cards = new ArrayList<>();
-        String[] colors = {"Red", "Black"};
-        String[] shapes = {"Spades", "Diamonds", "Clubs", "Hearts"};
-        String[] numbers = {"A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}; 
+        String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
+        String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}; 
 
         // Nested loop to generate all combinations of colors, shapes, and numbers
-        for (String color : colors) {
-            for (String shape : shapes) {
-                for (String number : numbers) {
-                    this.cards.add(new Card(color, shape, number)); // Add each card to the deck
-                }
+        
+        for (String suit : suits) {
+            String color = "";
+            
+            if(suit.equals("Spades") || suit.equals("Clubs")){
+                color = "Black"; 
+            } else if(suit.equals("Diamonds") || suit.equals("Hearts")){
+                color = "Red";
+            }
+            for (String rank : ranks) {
+                this.cards.add(new Card(color, suit, rank)); // Add each card to the deck
             }
         }
     }
@@ -27,6 +32,17 @@ public class Deck {
             System.out.print(card.getCard());
         }
     }
+
+    public void showPile(List<Card> pile) {
+        for (Card card : pile) {
+            System.out.print(card.getCard());
+        }
+    }
+
+    public void showCard(Card card) {
+        System.out.print(card.getCard());
+    }
+
 
     public void shuffleDeck(){
         Random rnd = new Random();
@@ -48,8 +64,25 @@ public class Deck {
         }
     }
 
+    public List<List<Card>> distributeCards() {
+        List<List<Card>> piles = new ArrayList<>();
+        Random rnd = new Random();
+        for (int i = 0; i < 7; i++) {
+            piles.add(new ArrayList<>());  // Initialize each pile
+        }
+        int cardIndex = 0;
+        for(int i = 0; i < 7; i++){
+            for(int j = i; j < 7; j++){
+                cardIndex = rnd.nextInt(cards.size());
+                piles.get(j).add(cards.get(cardIndex));
+                cards.remove(cardIndex);
+            }
+        }
+        return piles;
+    }
+
     // Method to get all cards
-    public List<Card> getCards() {
+    public List<Card>getCards() {
         return cards;
     }
 }
