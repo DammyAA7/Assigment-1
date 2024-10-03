@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 import java.util.ArrayList; // import the ArrayList class
 
 
@@ -36,6 +37,20 @@ public class Deck {
     public void showPile(List<Card> pile) {
         for (Card card : pile) {
             System.out.print(card.getCard());
+        }
+    }
+
+    public void showAllPiles(List<List<Card>> piles){
+        List<Integer> lengthOfPiles = new ArrayList<>();
+        Stack<Card> st = new Stack<Card>();
+        for(int i = 0; i < piles.size(); i++){
+            System.out.println("\rPile " + (i + 1));
+            lengthOfPiles.add(piles.get(i).size());
+        }
+
+        for(int i = 0; i < piles.size(); i++){
+            StringBuilder str = new StringBuilder();
+            
         }
     }
 

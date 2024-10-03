@@ -23,19 +23,31 @@ public class Card {
         int cardDetailIndex = 0;
         for (int i = 0; i < cardLength; i++) {
             if (i == 0 || i == cardLength - 1) {
-                card += "##################\n";  // Top and bottom border
+                card += "------------------\n";  // Top and bottom border
             } else if (i % 3 == 0 && cardDetailIndex < cardDetail.length) {
                 String detail = cardDetail[cardDetailIndex].toString();
                 int paddingFront = (int) Math.ceil((cardWidth - detail.length()) / 2); // Calculate padding on front side
                 int paddingBack = (int) Math.floor((cardWidth - detail.length()) / 2); // Calculate padding on back side
                 paddingFront = (detail.length() % 2 == 0) ? paddingBack : paddingBack + 1;
-                String paddedDetail = String.format("#%" + paddingFront + "s%s%" + paddingBack + "s#\n", "", detail, "");
+                String paddedDetail = String.format("|%" + paddingFront + "s%s%" + paddingBack + "s|\n", "", detail, "");
                 card += paddedDetail;
                 cardDetailIndex++;
             } else {
-                card += "#                #\n";  // Empty row
+                card += "|                |\n";  // Empty row
             }
         }
         return card;
+    }
+
+    public String getSuit(){
+        return suit;
+    }
+
+    public String getRank(){
+        return rank;
+    }
+
+    public String getColor(){
+        return color;
     }
 }
