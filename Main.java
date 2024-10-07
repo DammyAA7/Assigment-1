@@ -9,23 +9,19 @@ public class Main {
         //deck.showDeck();
         deck.shuffleDeck();
         
-        List<List<Card>> piles = deck.distributeCards();
-        List<Card> shuffledDeck = deck.getCards();
+        List<Stack<Card>> piles = deck.distributeCards();
+        Stack<Card> shuffledDeck = new Stack<>();
+        shuffledDeck.addAll(0, deck.getCards());
         
-        showAllPiles(piles, deck);
-        showAllPiles(piles, deck);
+        deck.showAllPiles(piles);
+
+        System.out.println("\nNumber of cards: " + shuffledDeck.size());
+
+        deck.showGeneralCardPile(shuffledDeck);
 
         
 
 
     }
 
-    public static void showAllPiles(List<List<Card>> piles, Deck deck){
-        for(int i = 0; i < piles.size(); i++){
-            System.out.println("\rPile " + (i + 1));
-            System.out.println("\runshown cards - " + (piles.get(i).size() - 1));
-            int last_card = piles.get(i).size() - 1;
-            deck.showCard((piles.get(i)).get(last_card));
-        }
-    }
 }

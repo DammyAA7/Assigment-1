@@ -40,22 +40,42 @@ public class Deck {
         }
     }
 
-    public void showAllPiles(List<List<Card>> piles){
-        List<Integer> lengthOfPiles = new ArrayList<>();
-        Stack<Card> st = new Stack<Card>();
-        for(int i = 0; i < piles.size(); i++){
-            System.out.println("\rPile " + (i + 1));
-            lengthOfPiles.add(piles.get(i).size());
-        }
-
-        for(int i = 0; i < piles.size(); i++){
-            StringBuilder str = new StringBuilder();
+    public void showAllPiles(List<Stack<Card>> piles){
+        //List<Integer> lengthOfPiles = new ArrayList<>();
+        int cardLength = 12;
+        for(int i = 0; i < cardLength; i++){
+            if(i == 0){
+                for(int j = 0; j < piles.size(); j++){
+                    if(j != 0)
+                        System.out.print("             ");
+                    System.out.printf("     Pile %s (%s)", j + 1, piles.get(j).size());   
+                }
+                System.out.print("\n");
+            }
             
+            for(int j = 0; j < piles.size(); j++){
+                if(j != 0)
+                    System.out.print("     ");     
+                System.out.print(piles.get(j).peek().getCard()[i] + "     ");
+            }
+            System.out.print("\n");
         }
+        
+
     }
 
     public void showCard(Card card) {
-        System.out.print(card.getCard());
+        //System.out.print(card.getCard());
+        for (int i = 0; i < card.getCard().length; i++) {
+            System.out.println(card.getCard()[i]);
+       }  
+    }
+
+
+
+
+    public void showGeneralCardPile(Stack<Card> shuffledDeck) {
+        showCard(shuffledDeck.peek());
     }
 
 
@@ -79,17 +99,17 @@ public class Deck {
         }
     }
 
-    public List<List<Card>> distributeCards() {
-        List<List<Card>> piles = new ArrayList<>();
+    public List<Stack<Card>> distributeCards() {
+        List<Stack<Card>> piles = new ArrayList<>();
         Random rnd = new Random();
         for (int i = 0; i < 7; i++) {
-            piles.add(new ArrayList<>());  // Initialize each pile
+            piles.add(new Stack<>());  // Initialize each pile
         }
         int cardIndex = 0;
-        for(int i = 0; i < 7; i++){
+        for(int i = 0; i < 7; i++){ //O^2 - change to hashmap 
             for(int j = i; j < 7; j++){
                 cardIndex = rnd.nextInt(cards.size());
-                piles.get(j).add(cards.get(cardIndex));
+                piles.get(j).push(cards.get(cardIndex));
                 cards.remove(cardIndex);
             }
         }
