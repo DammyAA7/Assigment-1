@@ -20,12 +20,20 @@ public class Main {
                 } else if(r1.equalsIgnoreCase("quit")){
                     System.out.println("Game terminated");
                     break;
-                } else{
+                } else if(r1.toLowerCase().contains("move")){
+                    String[] instructions = decipherMove(r1.replace("move ", ""));
+                   
+
+                }else{
                     System.out.println("Invalid input");
                 }
             }
         }
 
+    }
+
+    public static String[] decipherMove(String move){
+        return move.split("-");
     }
 
     public static void startGame(){

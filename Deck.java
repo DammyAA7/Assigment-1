@@ -61,7 +61,6 @@ public class Deck {
     }
 
     public void showAllPiles(){
-        //List<Integer> lengthOfPiles = new ArrayList<>();
         int cardLength = 12;
         for(int i = 0; i < cardLength; i++){
             if(i == 0){
