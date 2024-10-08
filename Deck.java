@@ -2,15 +2,19 @@ import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 import java.util.ArrayList; // import the ArrayList class
-
+import java.util.HashMap;
 
 public class Deck {
     private List<Card> cards;
+    private List<Stack<Card>> piles = new ArrayList<>();
+    private List<Stack<Card>> foundationPiles = new ArrayList<>();
+    private HashMap<Integer, String> ranks;
 
     public Deck() {
         this.cards = new ArrayList<>();
+        initializeRanks();
         String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
-        String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}; 
+         
 
         // Nested loop to generate all combinations of colors, shapes, and numbers
         
@@ -22,10 +26,22 @@ public class Deck {
             } else if(suit.equals("Diamonds") || suit.equals("Hearts")){
                 color = "Red";
             }
-            for (String rank : ranks) {
+            for (int rankValue : ranks.keySet()) {
+                String rank = ranks.get(rankValue);
                 this.cards.add(new Card(color, suit, rank)); // Add each card to the deck
             }
         }
+    }
+
+    private void initializeRanks() {
+        ranks = new HashMap<>();
+        ranks.put(1, "A"); // Ace
+        for (int i = 2; i <= 10; i++) {
+            ranks.put(i, String.valueOf(i)); // 2-10
+        }
+        ranks.put(11, "J"); // Jack
+        ranks.put(12, "Q"); // Queen
+        ranks.put(13, "K"); // King
     }
 
     public void showDeck() {
@@ -40,7 +56,11 @@ public class Deck {
         }
     }
 
-    public void showAllPiles(List<Stack<Card>> piles){
+    public List<Stack<Card>> getAllPiles(){
+        return piles;
+    }
+
+    public void showAllPiles(){
         //List<Integer> lengthOfPiles = new ArrayList<>();
         int cardLength = 12;
         for(int i = 0; i < cardLength; i++){
@@ -99,10 +119,11 @@ public class Deck {
         }
     }
 
-    public List<Stack<Card>> distributeCards() {
-        List<Stack<Card>> piles = new ArrayList<>();
+    public void distributeCards() {
         Random rnd = new Random();
         for (int i = 0; i < 7; i++) {
+            if(i < 4)
+                foundationPiles.add(new Stack<>());
             piles.add(new Stack<>());  // Initialize each pile
         }
         int cardIndex = 0;
@@ -113,7 +134,6 @@ public class Deck {
                 cards.remove(cardIndex);
             }
         }
-        return piles;
     }
 
     // Method to get all cards
