@@ -8,7 +8,7 @@ public class Deck {
     private List<Card> cards;
     private List<Stack<Card>> piles = new ArrayList<>();
     private List<Stack<Card>> foundationPiles = new ArrayList<>();
-    private HashMap<Integer, String> ranks;
+    private HashMap<String, Integer> ranks;
 
     public Deck() {
         this.cards = new ArrayList<>();
@@ -26,22 +26,21 @@ public class Deck {
             } else if(suit.equals("Diamonds") || suit.equals("Hearts")){
                 color = "Red";
             }
-            for (int rankValue : ranks.keySet()) {
-                String rank = ranks.get(rankValue);
+            for (String rank : ranks.keySet()) {
                 this.cards.add(new Card(color, suit, rank)); // Add each card to the deck
             }
         }
     }
 
-    private void initializeRanks() {
+    public void initializeRanks() {
         ranks = new HashMap<>();
-        ranks.put(1, "A"); // Ace
+        ranks.put("A", 1); // Ace
         for (int i = 2; i <= 10; i++) {
-            ranks.put(i, String.valueOf(i)); // 2-10
+            ranks.put(String.valueOf(i), i); // 2-10
         }
-        ranks.put(11, "J"); // Jack
-        ranks.put(12, "Q"); // Queen
-        ranks.put(13, "K"); // King
+        ranks.put("J", 11); // Jack
+        ranks.put("Q", 12); // Queen
+        ranks.put("K", 13); // King
     }
 
     public void showDeck() {

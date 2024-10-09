@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String args[]) {  
+
+        Moves m;
         
         Scanner obj = new Scanner(System.in);  // Create a Scanner object 
         System.out.println("\rWelcome! To start a game of patience press 'S' ");
@@ -22,6 +24,7 @@ public class Main {
                     break;
                 } else if(r1.toLowerCase().contains("move")){
                     String[] instructions = decipherMove(r1.replace("move ", ""));
+                    m.moveCard(instructions, , null)
                    
 
                 }else{
