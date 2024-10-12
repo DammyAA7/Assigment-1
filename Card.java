@@ -52,6 +52,10 @@ public class Card {
         return card;
     }
 
+    public Card emptyCard(){
+        return new Card("", "Empty Pile", "");
+    }
+
     public String getSuit(){
         return suit;
     }

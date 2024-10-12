@@ -5,13 +5,13 @@ import java.util.ArrayList; // import the ArrayList class
 import java.util.HashMap;
 
 public class Deck {
-    private List<Card> cards;
+    private Stack<Card> cards;
     private List<Stack<Card>> piles = new ArrayList<>();
     private List<Stack<Card>> foundationPiles = new ArrayList<>();
     private HashMap<String, Integer> ranks;
 
     public Deck() {
-        this.cards = new ArrayList<>();
+        this.cards = new Stack<>();
         initializeRanks();
         String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
          
@@ -59,11 +59,49 @@ public class Deck {
         return piles;
     }
 
+    public Stack<Card> getGenCards(){
+        return cards;
+    }
+
+    public void showFoundationPiles() {
+        String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
+        int cardLength = 12; // Height of the card display
+        Card card = new Card("", "Empty", "");
+        
+        // Header to label the foundation piles
+        System.out.println("Foundation Piles:");
+        for (int i = 0; i < suits.length; i++) {
+            System.out.printf(" %s (%s cards)", suits[i], foundationPiles.get(i).size());
+            if (i != suits.length - 1) {
+                System.out.print("      "); // Add spacing between the labels
+            }
+        }
+        System.out.print("\n");
+    
+        // Display the top card of each foundation pile, or indicate that the pile is empty
+        for (int i = 0; i < cardLength; i++) {
+            for (int j = 0; j < foundationPiles.size(); j++) {
+                Stack<Card> foundationPile = foundationPiles.get(j);
+                
+                if (!foundationPile.isEmpty()) {
+                    // Print the card's display (line by line)
+                    System.out.print(foundationPile.peek().getCard()[i] + "     ");
+                } else {
+                    // Show empty pile when there are no cards in the foundation
+                    System.out.print(card.getCard()[i] + "     ");
+                }
+            }
+            System.out.print("\n");
+        }
+    }
+    
+
     public void showAllPiles(){
+        Card card = new Card("", "Empty", "");
         int cardLength = 12;
         for(int i = 0; i < cardLength; i++){
             if(i == 0){
-                for(int j = 0; j < piles.size(); j++){
+                for(int j = 0; j < (piles.size() == 0 ? 1 : piles.size()); j++){
                     if(j != 0)
                         System.out.print("             ");
                     System.out.printf("     Pile %s (%s)", j + 1, piles.get(j).size());   
@@ -71,10 +109,14 @@ public class Deck {
                 System.out.print("\n");
             }
             
-            for(int j = 0; j < piles.size(); j++){
+            for(int j = 0; j < (piles.size() == 0 ? 1 : piles.size()); j++){
                 if(j != 0)
-                    System.out.print("     ");     
-                System.out.print(piles.get(j).peek().getCard()[i] + "     ");
+                    System.out.print("     ");  
+                if (!piles.get(j).isEmpty()) { // Only call peek() if the pile is not empty
+                    System.out.print(piles.get(j).peek().getCard()[i] + "     ");
+                } else {
+                    System.out.print(card.getCard()[i] + "     ");
+                }
             }
             System.out.print("\n");
         }
@@ -135,7 +177,7 @@ public class Deck {
     }
 
     // Method to get all cards
-    public List<Card>getCards() {
+    public Stack<Card>getCards() {
         return cards;
     }
 }
