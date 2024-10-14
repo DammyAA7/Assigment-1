@@ -2,6 +2,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.ArrayList;
 import java.util.Scanner; 
+import java.util.Queue;
 
 public class Main {
     public static void main(String args[]) {
@@ -20,7 +21,7 @@ public class Main {
             
             while (true) {
                 String r1 = obj.nextLine();
-                System.out.println("======================================================================");
+                //System.out.println("======================================================================");
                 if(r1.equalsIgnoreCase("shuffle")){
                     System.out.println("New Game Started");
                     deck = new Deck();
@@ -38,11 +39,11 @@ public class Main {
                         System.out.println("Invalid move");
                     }
                     
-                } else if(r1.equalsIgnoreCase("D")){
+                } else if(r1.equalsIgnoreCase("d")){
                     if(deck.getGenCards().isEmpty())
                         deck.setGenCards(tempGenCards);
                     else
-                        deck.popGenCards(tempGenCard);
+                        deck.popGenCards(tempGenCards);
                 }else{
                     System.out.println("Invalid input");
                 }
@@ -71,7 +72,7 @@ public class Main {
 
     public static void continueGame(Deck deck){ 
         deck.showAllPiles(); 
-        System.out.println("\nNumber of cards: " + deck.getGenCards().size());
+        System.out.println("\nNumber of cards: " + deck.getGenCards().size() + tempGenCards.size());
         deck.showGeneralCardPile(deck.getGenCards());
         deck.showFoundationPiles();
     }
