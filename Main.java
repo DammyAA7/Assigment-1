@@ -8,6 +8,7 @@ public class Main {
         Moves moves = new Moves();  
         Deck deck = new Deck();
         deck.shuffleDeck();
+        Queue<Card> tempGenCards = new Queue<>();
         
         
         Scanner obj = new Scanner(System.in);  // Create a Scanner object 
@@ -16,8 +17,10 @@ public class Main {
         String response = obj.nextLine();  // Read user input
         if(response.toLowerCase().equals("s")){
             startGame(deck);
+            
             while (true) {
                 String r1 = obj.nextLine();
+                System.out.println("======================================================================");
                 if(r1.equalsIgnoreCase("shuffle")){
                     System.out.println("New Game Started");
                     deck = new Deck();
@@ -35,6 +38,11 @@ public class Main {
                         System.out.println("Invalid move");
                     }
                     
+                } else if(r1.equalsIgnoreCase("D")){
+                    if(deck.getGenCards().isEmpty())
+                        deck.setGenCards(tempGenCards);
+                    else
+                        deck.popGenCards(tempGenCard);
                 }else{
                     System.out.println("Invalid input");
                 }

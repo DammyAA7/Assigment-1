@@ -21,6 +21,7 @@ public class Moves {
             cardCount = Integer.parseInt(instructions[2]); // Number of cards to move
         } else {
             return false;
+        }        
         Stack<Card> fromPile;
         Stack<Card> toPile;
         
@@ -102,6 +103,8 @@ public class Moves {
         return true;
 
     }
+
+
     private Stack<Card> getPile(String identifyPile, List<Stack<Card>> piles, Stack<Card> deck){
         if(identifyPile.equals("g")){
             return deck;
@@ -123,11 +126,4 @@ public class Moves {
         throw new IllegalArgumentException("Error: Unrecognized pile identifier. Use 'g' for deck or 'p[number]' for piles.");
     }
 
-
-
-    
-
-
-
-    }
 }

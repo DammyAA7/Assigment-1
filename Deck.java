@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 import java.util.ArrayList; // import the ArrayList class
@@ -61,6 +62,14 @@ public class Deck {
 
     public Stack<Card> getGenCards(){
         return cards;
+    }
+
+    public void setGenCards(Queue<Card> tempGenCards){
+        cards.addAll(tempGenCards);
+    }
+
+    public void popGenCards(Queue<Card> newGen){
+        newGen.add(card.pop());
     }
 
     public void showFoundationPiles() {
