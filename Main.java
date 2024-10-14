@@ -1,90 +1,142 @@
-import java.util.List;
 import java.util.Stack;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner; 
+import java.util.Scanner;
 import java.util.Queue;
 
 public class Main {
-    public static void main(String args[]) {
-        Moves moves = new Moves();  
-        Deck deck = new Deck();
-        deck.shuffleDeck();
-        Queue<Card> tempGenCards = new LinkedList<>();
-        
-        
-        Scanner obj = new Scanner(System.in);  // Create a Scanner object 
-        System.out.println("\rWelcome! To start a game of patience press 'S' ");
+    private static int score = 0; // Variable to track the game score
 
-        String response = obj.nextLine();  // Read user input
-        if(response.toLowerCase().equals("s")){
-            startGame(deck);
-            
+    public static void main(String[] args) {
+        Moves moves = new Moves(); // Initialize Moves class for game moves
+        Deck deck = new Deck(); // Create a new deck
+        deck.shuffleDeck(); // Shuffle the deck before starting the game
+        Queue<Card> tempGenCards = new LinkedList<>(); // Temporary queue for general cards
+
+        Scanner scanner = new Scanner(System.in); // Create a Scanner object for user input
+        System.out.println("\rWelcome! To start a game of patience, press 'S' ");
+
+        String response = scanner.nextLine(); // Read user input for game start
+        if (response.equalsIgnoreCase("s")) {
+            startGame(deck); // Start the game if user presses 'S'
+
+            // Main game loop
             while (true) {
-                String r1 = obj.nextLine();
-                //System.out.println("======================================================================");
-                if(r1.equalsIgnoreCase("shuffle")){
+                String userInput = scanner.nextLine(); // Read user input during the game
+                System.out.println("======================================================================");
+                
+                if (userInput.equalsIgnoreCase("shuffle")) {
+                    // Start a new game by shuffling a new deck
                     System.out.println("New Game Started");
                     deck = new Deck();
                     deck.shuffleDeck();
-                    startGame(deck);
-                } else if(r1.equalsIgnoreCase("quit")){
+                    score = 0; // Reset score for new game
+                    startGame(deck); // Initialize new game setup
+                } else if (userInput.equalsIgnoreCase("quit")) {
+                    // Exit the game
                     System.out.println("Game terminated");
                     break;
-                } else if(r1.toLowerCase().contains("move")){
-                    String[] instructions = decipherMove(r1.replace("move ", ""));
+                } else if (userInput.toLowerCase().contains("move")) {
+                    // Handle card move command
+                    String[] instructions = decipherMove(userInput.replace("move ", ""));
                     boolean success = moves.moveCard(instructions, deck.getAllPiles(), deck.getGenCards(), deck.getFoundationPiles(), deck);
-                    if (success){
-                        deck.increaseMaxMovableCards(instructions[1], Integer.parseInt(instructions[2]));
-                        continueGame(deck, tempGenCards);
-                    } else { 
-                        System.out.println("Invalid move");
+                    if (success) {
+                        updateScore(instructions, deck); // Update score if move is successful
+                        continueGame(deck, tempGenCards); // Continue the game after a valid move
+
+                        // Check for game over after each valid move
+                        if (isGameOver(deck)) {
+                            System.out.println("Game Over! No more moves left.");
+                            break; // Exit the loop if the game is over
+                            } 
+                        }
+                    else {
+                        System.out.println("Invalid move. Please try again."); // Error message for invalid move
                     }
-                    
-                } else if(r1.equalsIgnoreCase("d")){
+                } else if (userInput.equalsIgnoreCase("d")) {
+                    // Draw a card from the general pile
                     deck.popGenCards(tempGenCards);
                     continueGame(deck, tempGenCards);
-                    
-                }else{
-                    System.out.println("Invalid input");
+                } else {
+                    System.out.println("Invalid input. Please enter a valid command."); // Error message for invalid command
                 }
             }
         }
-
+        scanner.close();
     }
 
-    public static String[] decipherMove(String move){
+    // Splits the move command into an array of strings
+    public static String[] decipherMove(String move) {
         return move.split("-");
     }
 
-    public static void startGame(Deck deck){
-        
-        deck.distributeCards();
+    // Initializes the game by distributing cards and displaying the initial setup
+    public static void startGame(Deck deck) {
+        deck.distributeCards(); // Distribute cards to piles and foundation piles
         Stack<Card> shuffledDeck = new Stack<>();
-        shuffledDeck.addAll(0, deck.getCards());
-        
-        deck.showAllPiles();
+        shuffledDeck.addAll(0, deck.getCards()); // Copy shuffled deck
 
-        System.out.println("\nNumber of cards: " + shuffledDeck.size());
+        deck.showAllPiles(); // Display the piles
 
-        deck.showGeneralCardPile(shuffledDeck);
-        deck.showFoundationPiles();
+        System.out.println("\nNumber of cards: " + shuffledDeck.size()); // Show total number of cards
 
-        deck.showMaxMovableCards();
+        deck.showGeneralCardPile(shuffledDeck); // Show the top card of the general card pile
+        deck.showFoundationPiles(); // Show the foundation piles
+        deck.showMaxMovableCards(); // Display max movable cards information
+
+        System.out.println("Current Score: " + score); // Show initial score
     }
 
-    public static void continueGame(Deck deck, Queue<Card> tempGenCards){ 
-        deck.showAllPiles(); 
-        System.out.println("\nNumber of cards: " + (deck.getGenCards().size() + tempGenCards.size()));
-        if(deck.getGenCards().isEmpty()){
+    // Updates the score based on the type of move performed
+    public static void updateScore(String[] instructions, Deck deck) {
+        String from = instructions[0];
+        String to = instructions[1];
+
+        if (from.equalsIgnoreCase("g") && to.startsWith("f")) {
+            // 10 points for moving from the general pile to a foundation pile
+            score += 10;
+        } else if (from.startsWith("p") && to.startsWith("f")) {
+            // 20 points for moving from a lane to a foundation pile
+            score += 20;
+        } else if (from.startsWith("p") && to.startsWith("p")) {
+            // 5 points for moving between lanes
+            score += 5;
+        }
+    }
+
+    public static boolean isGameOver(Deck deck) {
+        // Check if the general cards are empty
+        if (!deck.getGenCards().isEmpty()) {
+            return false; // The game is not over if there are cards in the general pile
+        }
+    
+        // Check if all lane piles are empty
+        for (LanePile lanePile : deck.getAllPiles()) {
+            if (!lanePile.isEmpty()) {
+                return false; // The game is not over if there's at least one card in the lane piles
+            }
+        }
+    
+        // If all checks are passed, return true, meaning the game is over
+        return true;
+    }
+    
+
+    // Continues the game by displaying the current state and updating the general pile if necessary
+    public static void continueGame(Deck deck, Queue<Card> tempGenCards) {
+        deck.showAllPiles(); // Display the piles
+
+        System.out.println("\nNumber of cards: " + (deck.getGenCards().size() + tempGenCards.size())); // Show total number of cards
+
+        // Refill the general pile from temporary queue if the general pile is empty
+        if (deck.getGenCards().isEmpty()) {
             deck.setGenCards(tempGenCards);
             tempGenCards.clear();
         }
-        deck.showGeneralCardPile(deck.getGenCards());
-        deck.showFoundationPiles();
 
-        deck.showMaxMovableCards();
+        deck.showGeneralCardPile(deck.getGenCards()); // Show the top card of the general pile
+        deck.showFoundationPiles(); // Show the foundation piles
+        deck.showMaxMovableCards(); // Display max movable cards information
+
+        System.out.println("Current Score: " + score); // Show the current score
     }
-
-
 }

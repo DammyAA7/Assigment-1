@@ -6,31 +6,26 @@ import java.util.ArrayList; // import the ArrayList class
 import java.util.HashMap;
 
 public class Deck {
-    private Stack<Card> cards;
-    private List<Stack<Card>> piles = new ArrayList<>();
-    private List<Stack<Card>> foundationPiles = new ArrayList<>();
-    private HashMap<String, Integer> ranks;
-    private HashMap<String, Integer> maxMovableCards;
+    private Stack<Card> cards; // Stack to hold the deck of cards
+    private List<Stack<Card>> piles = new ArrayList<>(); // List of card piles on the table
+    private List<Stack<Card>> foundationPiles = new ArrayList<>(); // List of foundation piles (for each suit)
+    private HashMap<String, Integer> ranks; // Map to store card ranks
+    private HashMap<String, Integer> maxMovableCards; // Map to store max movable cards for each pile
 
     public Deck() {
         this.cards = new Stack<>();
         initializeRanks();
         initializeMaxMovableCards();
-        String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
-         
+        createDeck();
+    }
 
-        // Nested loop to generate all combinations of colors, shapes, and numbers
-        
+    // Creates a standard deck of 52 cards
+    private void createDeck() {
+        String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
         for (String suit : suits) {
-            String color = "";
-            
-            if(suit.equals("Spades") || suit.equals("Clubs")){
-                color = "Black"; 
-            } else if(suit.equals("Diamonds") || suit.equals("Hearts")){
-                color = "Red";
-            }
+            String color = (suit.equals("Spades") || suit.equals("Clubs")) ? "Black" : "Red";
             for (String rank : ranks.keySet()) {
-                this.cards.add(new Card(color, suit, rank)); // Add each card to the deck
+                cards.add(new Card(color, suit, rank)); // Add each card to the deck
             }
         }
     }
@@ -54,11 +49,49 @@ public class Deck {
         }
     }
 
+    // Shuffles the deck of cards using the Fisher-Yates algorithm
+    public void shuffleDeck(){
+        Random rnd = new Random();
+        for (int i = cards.size() - 1; i > 0; i--){
+            int index = rnd.nextInt(i + 1);
+            Card card = cards.get(index);
+            cards.set(index, cards.get(i));
+            cards.set(i, card);
+        }
+        for (int i = cards.size() - 1; i > 0; i--){
+            int index = rnd.nextInt(i + 1);
+            Card card = cards.get(index);
+            cards.set(index, cards.get(i));
+            cards.set(i, card);
+        }
+    }
+
+    // Distributes cards to the piles and initializes the foundation piles
+    public void distributeCards() {
+        Random rnd = new Random();
+        for (int i = 0; i < 7; i++) {
+            if(i < 4)
+                foundationPiles.add(new Stack<>());// Create foundation piles for the first 4 suits
+            piles.add(new Stack<>());  // Initialize each pile
+        }
+        // Create foundation piles for the first 4 suits
+        int cardIndex = 0;
+        for(int i = 0; i < 7; i++){ 
+            for(int j = i; j < 7; j++){
+                cardIndex = rnd.nextInt(cards.size());
+                piles.get(j).push(cards.get(cardIndex));
+                cards.remove(cardIndex);
+            }
+        }
+    }
+
+    // Increases the number of max movable cards for a given pile
     public void increaseMaxMovableCards(String pileIdentifier, int numberOfCards){
         int currentMax = maxMovableCards.get(pileIdentifier);
         maxMovableCards.put(pileIdentifier, currentMax + numberOfCards);
     }
 
+    // Shows the maximum number of movable cards for each pile
     public void showMaxMovableCards() {
         System.out.println("Max Movable Cards for Each Pile:");
         for (int i = 0; i < piles.size(); i++) {
@@ -67,45 +100,61 @@ public class Deck {
             System.out.printf(" %s: %d\n", pileIdentifier, maxMovable); // Display pile identifier and max movable count
         }
     }
+
+     // Getter for maxMovableCards
+     public HashMap<String, Integer> getMaxMovableCards() {
+        return maxMovableCards;
+    }
+
+    // Method to update max movable cards for a specific pile
+    public void updateMaxMovable(String pileIdentifier, int newMaxMovable) {
+        maxMovableCards.put(pileIdentifier, newMaxMovable);
+    }
     
 
+    // Shows all cards in the deck
     public void showDeck() {
         for (Card card : cards) {
             System.out.print(card.getCard());
         }
     }
 
+    // Shows the top card of each pile
     public void showPile(List<Card> pile) {
         for (Card card : pile) {
             System.out.print(card.getCard());
         }
     }
 
-    public List<Stack<Card>> getAllPiles(){
+    // Gets all card piles
+    public List<Stack<Card>> getAllPiles() {
         return piles;
     }
 
-    public Stack<Card> getGenCards(){
+    // Gets the general card stack (deck)
+    public Stack<Card> getGenCards() {
         return cards;
     }
 
-    public void setGenCards(Queue<Card> tempGenCards){
+    // Sets the general card stack from a temporary queue
+    public void setGenCards(Queue<Card> tempGenCards) {
         cards.clear();
         cards.addAll(tempGenCards);
     }
 
-    public void popGenCards(Queue<Card> newGen){
-        if (!cards.isEmpty()){
+    // Pops a card from the general card stack
+    public void popGenCards(Queue<Card> newGen) {
+        if (!cards.isEmpty()) {
             newGen.add(cards.pop());
         }
     }
 
-    public List<Stack<Card>> getFoundationPiles(){
+    // Gets the foundation piles
+    public List<Stack<Card>> getFoundationPiles() {
         return foundationPiles;
-    }
+    } 
 
-    
-
+    // Displays the foundation piles, including the top card of each pile
     public void showFoundationPiles() {
         String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
         int cardLength = 12; // Height of the card display
@@ -138,7 +187,7 @@ public class Deck {
         }
     }
     
-
+    // Displays all the piles on the table
     public void showAllPiles(){
         Card card = new Card("", "Empty", "");
         int cardLength = 12;
@@ -174,49 +223,8 @@ public class Deck {
        }  
     }
 
-
-
-
     public void showGeneralCardPile(Stack<Card> shuffledDeck) {
         showCard(shuffledDeck.peek());
-    }
-
-
-    public void shuffleDeck(){
-        Random rnd = new Random();
-        for (int i = cards.size() - 1; i > 0; i--)
-        {
-            int index = rnd.nextInt(i + 1);
-
-            Card card = cards.get(index);
-            cards.set(index, cards.get(i));
-            cards.set(i, card);
-        }
-        for (int i = cards.size() - 1; i > 0; i--)
-        {
-            int index = rnd.nextInt(i + 1);
-
-            Card card = cards.get(index);
-            cards.set(index, cards.get(i));
-            cards.set(i, card);
-        }
-    }
-
-    public void distributeCards() {
-        Random rnd = new Random();
-        for (int i = 0; i < 7; i++) {
-            if(i < 4)
-                foundationPiles.add(new Stack<>());
-            piles.add(new Stack<>());  // Initialize each pile
-        }
-        int cardIndex = 0;
-        for(int i = 0; i < 7; i++){ //O^2 - change to hashmap 
-            for(int j = i; j < 7; j++){
-                cardIndex = rnd.nextInt(cards.size());
-                piles.get(j).push(cards.get(cardIndex));
-                cards.remove(cardIndex);
-            }
-        }
     }
 
     // Method to get all cards
