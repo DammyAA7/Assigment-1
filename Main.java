@@ -1,6 +1,7 @@
 import java.util.List;
 import java.util.Stack;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner; 
 import java.util.Queue;
 
@@ -9,7 +10,7 @@ public class Main {
         Moves moves = new Moves();  
         Deck deck = new Deck();
         deck.shuffleDeck();
-        Queue<Card> tempGenCards = new Queue<>();
+        Queue<Card> tempGenCards = new LinkedList<>();
         
         
         Scanner obj = new Scanner(System.in);  // Create a Scanner object 
@@ -32,18 +33,18 @@ public class Main {
                     break;
                 } else if(r1.toLowerCase().contains("move")){
                     String[] instructions = decipherMove(r1.replace("move ", ""));
-                    boolean success = moves.moveCard(instructions, deck.getAllPiles(), deck.getGenCards());
+                    boolean success = moves.moveCard(instructions, deck.getAllPiles(), deck.getGenCards(), deck.getFoundationPiles(), deck);
                     if (success){
-                        continueGame(deck);
+                        deck.increaseMaxMovableCards(instructions[1], Integer.parseInt(instructions[2]));
+                        continueGame(deck, tempGenCards);
                     } else { 
                         System.out.println("Invalid move");
                     }
                     
                 } else if(r1.equalsIgnoreCase("d")){
-                    if(deck.getGenCards().isEmpty())
-                        deck.setGenCards(tempGenCards);
-                    else
-                        deck.popGenCards(tempGenCards);
+                    deck.popGenCards(tempGenCards);
+                    continueGame(deck, tempGenCards);
+                    
                 }else{
                     System.out.println("Invalid input");
                 }
@@ -68,13 +69,21 @@ public class Main {
 
         deck.showGeneralCardPile(shuffledDeck);
         deck.showFoundationPiles();
+
+        deck.showMaxMovableCards();
     }
 
-    public static void continueGame(Deck deck){ 
+    public static void continueGame(Deck deck, Queue<Card> tempGenCards){ 
         deck.showAllPiles(); 
-        System.out.println("\nNumber of cards: " + deck.getGenCards().size() + tempGenCards.size());
+        System.out.println("\nNumber of cards: " + (deck.getGenCards().size() + tempGenCards.size()));
+        if(deck.getGenCards().isEmpty()){
+            deck.setGenCards(tempGenCards);
+            tempGenCards.clear();
+        }
         deck.showGeneralCardPile(deck.getGenCards());
         deck.showFoundationPiles();
+
+        deck.showMaxMovableCards();
     }
 
 

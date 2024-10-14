@@ -10,10 +10,12 @@ public class Deck {
     private List<Stack<Card>> piles = new ArrayList<>();
     private List<Stack<Card>> foundationPiles = new ArrayList<>();
     private HashMap<String, Integer> ranks;
+    private HashMap<String, Integer> maxMovableCards;
 
     public Deck() {
         this.cards = new Stack<>();
         initializeRanks();
+        initializeMaxMovableCards();
         String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
          
 
@@ -44,6 +46,29 @@ public class Deck {
         ranks.put("K", 13); // King
     }
 
+    // New method to initialize max movable cards for each pile
+    private void initializeMaxMovableCards() {
+        maxMovableCards = new HashMap<>();
+        for (int i = 0; i < 7; i++) { // Assuming 7 piles
+            maxMovableCards.put("p" + (i + 1), 1); // Initial value can be set to 1 or another logic as needed
+        }
+    }
+
+    public void increaseMaxMovableCards(String pileIdentifier, int numberOfCards){
+        int currentMax = maxMovableCards.get(pileIdentifier);
+        maxMovableCards.put(pileIdentifier, currentMax + numberOfCards);
+    }
+
+    public void showMaxMovableCards() {
+        System.out.println("Max Movable Cards for Each Pile:");
+        for (int i = 0; i < piles.size(); i++) {
+            String pileIdentifier = "p" + (i + 1); // Pile identifier
+            int maxMovable = maxMovableCards.get(pileIdentifier); // Get max movable cards for the pile
+            System.out.printf(" %s: %d\n", pileIdentifier, maxMovable); // Display pile identifier and max movable count
+        }
+    }
+    
+
     public void showDeck() {
         for (Card card : cards) {
             System.out.print(card.getCard());
@@ -65,12 +90,21 @@ public class Deck {
     }
 
     public void setGenCards(Queue<Card> tempGenCards){
+        cards.clear();
         cards.addAll(tempGenCards);
     }
 
     public void popGenCards(Queue<Card> newGen){
-        newGen.add(card.pop());
+        if (!cards.isEmpty()){
+            newGen.add(cards.pop());
+        }
     }
+
+    public List<Stack<Card>> getFoundationPiles(){
+        return foundationPiles;
+    }
+
+    
 
     public void showFoundationPiles() {
         String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};

@@ -4,33 +4,47 @@ import java.util.HashMap;
 
 public class Moves {
     private HashMap<String, Integer> ranks;
+    private HashMap<String, Integer> suits;
+
 
     public Moves(){
         initializeRanks();
+        suits = new HashMap<>();
+        suits.put("Spades", 1);
+        suits.put("Diamonds", 2);
+        suits.put("Clubs", 3);
+        suits.put("Hearts", 4);
     }
 
-    public boolean moveCard(String[] instructions, List<Stack<Card>> piles, Stack<Card> deck){
+    public boolean moveCard(String[] instructions, List<Stack<Card>> piles, Stack<Card> deck, List<Stack<Card>> foundationPiles, Deck d){
         
         String from = instructions[0];
-        String to;
+        String to = instructions[1];
         int cardCount = 1;
-        if (instructions.length == 2) {
-            to = instructions[1];
-        } else if (instructions.length == 3) {
-            to = instructions[1];
-            cardCount = Integer.parseInt(instructions[2]); // Number of cards to move
-        } else {
-            return false;
-        }        
+
         Stack<Card> fromPile;
         Stack<Card> toPile;
         
         try{
-            fromPile = getPile(from, piles, deck);
-            toPile = getPile(to, piles, deck);
+            fromPile = getPile(from, piles, deck, foundationPiles);
+            toPile = getPile(to, piles, deck, foundationPiles);
         } catch (IllegalArgumentException e){
             return false;
         }
+
+        if(to.startsWith("f")){
+            System.out.println("true");
+            int foundationPileIndex = Integer.parseInt(to.substring(1));
+            return isMoveToFoundationPileAllowed(foundationPileIndex, fromPile, toPile, cardCount);
+        }
+
+        
+        if (instructions.length == 3) {
+            cardCount = Integer.parseInt(instructions[2]); // Number of cards to move
+        } else {
+            return false;
+        }        
+        
         
         Stack<Card> tempStack = new Stack<>();
 
@@ -44,7 +58,11 @@ public class Moves {
             }
             for(int i = 0; i < cardCount; i++){
                 toPile.push(tempStack.pop());
-            } 
+            }
+            // Increase max movable cards for the fromPile by the number of cards moved
+            String pileIdentifier = to; // Assume the from pile identifier is in the correct format
+            System.out.println(pileIdentifier);
+            //d.increaseMaxMovableCards(pileIdentifier, cardCount); // Increase by the number of cards moved 
         }
         return true; // Move successful
 
@@ -61,12 +79,42 @@ public class Moves {
         ranks.put("K", 13); // King
     }
 
+    private boolean isMoveToFoundationPileAllowed(int foundationPileIndex, Stack<Card> fromPile, Stack<Card> toPile, int cardCount){
+        
+        if (fromPile.isEmpty()){
+            return false;
+        }
+
+        int fromCardSuit = suits.get(fromPile.peek().getSuit());
+        int fromCardRank = ranks.get(fromPile.peek().getRank());
+        
+        if(fromCardSuit != foundationPileIndex){
+            return false;
+        }
+
+        if(fromCardRank != 1 && toPile.isEmpty()){
+            return false;
+        }
+
+        if(!toPile.isEmpty()){
+            int toCardRank = ranks.get(toPile.peek().getRank());
+            System.out.println("rank" + toCardRank);
+            if((fromCardRank - toCardRank) != 1){
+                return false;
+            }
+        }
+        
+
+        toPile.push(fromPile.pop());
+        return true;
+    }
+
     private boolean isMoveAllowed(Stack<Card> fromPile, Stack<Card> toPile, int cardCount){
         Card card1;
         Card card2;
         int pileSize = fromPile.size();
         
-        // Validate move by checking if the fromPile has enough cards
+        //Validate move by checking if the from Pile has enough cards
         if (pileSize < cardCount) {
             return false;
         }
@@ -78,12 +126,6 @@ public class Moves {
         }
 
         Card toCard = toPile.peek();
-
-        System.out.println("From card rank: " + fromCard.getRank());
-        System.out.println("To card rank: " + toCard.getRank());
-
-        System.out.println("Rank value of fromCard: " + ranks.get(fromCard.getRank()));
-        System.out.println("Rank value of toCard: " + ranks.get(toCard.getRank()));
 
         if(fromCard.getColor().equals(toCard.getColor()) || 
         ranks.get(fromCard.getRank()) - ranks.get(toCard.getRank()) != -1){
@@ -100,14 +142,26 @@ public class Moves {
                 return false;
             } 
         }
-        return true;
-
+        return true;    
     }
 
 
-    private Stack<Card> getPile(String identifyPile, List<Stack<Card>> piles, Stack<Card> deck){
+    private Stack<Card> getPile(String identifyPile, List<Stack<Card>> piles, Stack<Card> deck, List<Stack<Card>> foundationPiles){
         if(identifyPile.equals("g")){
             return deck;
+        }
+        try{
+            if (identifyPile.startsWith("f")) {
+                int foundationPileIndex = Integer.parseInt(identifyPile.substring(1)) - 1;
+                
+                if (foundationPileIndex >= 0 && foundationPileIndex < foundationPiles.size()) {
+                    return foundationPiles.get(foundationPileIndex); // Get the correct pile
+                } else {
+                    throw new IllegalArgumentException("Error: Foundation Pile " + (foundationPileIndex + 1) + " is out of range.");
+                }
+            }
+        } catch (NumberFormatException e){
+            throw new IllegalArgumentException("Error: Invalid pile identifier. Expected format: p[number].");
         }
         try{
             if (identifyPile.startsWith("p")) {
@@ -123,7 +177,7 @@ public class Moves {
             throw new IllegalArgumentException("Error: Invalid pile identifier. Expected format: p[number].");
         }
         
-        throw new IllegalArgumentException("Error: Unrecognized pile identifier. Use 'g' for deck or 'p[number]' for piles.");
+        throw new IllegalArgumentException("Error: Unrecognized pile identifier. Use 'g' for deck, 'f[number] for foundation piles' or 'p[number]' for piles.");
     }
 
 }
