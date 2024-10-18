@@ -110,11 +110,11 @@ public class Main {
         }
     
         // Check if all lane piles are empty
-        for (LanePile lanePile : deck.getAllPiles()) {
-            if (!lanePile.isEmpty()) {
-                return false; // The game is not over if there's at least one card in the lane piles
-            }
-        }
+        // for (LanePile lanePile : deck.getAllPiles()) {
+        //     if (!lanePile.isEmpty()) {
+        //         return false; // The game is not over if there's at least one card in the lane piles
+        //     }
+        // }
     
         // If all checks are passed, return true, meaning the game is over
         return true;
