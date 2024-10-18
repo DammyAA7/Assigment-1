@@ -30,6 +30,11 @@ public class Moves {
         String to = instructions[1];
         int cardCount = 1; // Default to moving a single card
 
+        // Handle move involving multiple cards if specified
+        if (instructions.length == 3) {
+            cardCount = Integer.parseInt(instructions[2]);
+        }
+
         Stack<Card> fromPile;
         Stack<Card> toPile;
 
@@ -43,13 +48,9 @@ public class Moves {
 
         // Handle move to a foundation pile
         if (to.startsWith("f")) {
+            cardCount = 1;
             int foundationPileIndex = Integer.parseInt(to.substring(1));
             return isMoveToFoundationPileAllowed(foundationPileIndex, fromPile, toPile, cardCount);
-        }
-
-        // Handle move involving multiple cards if specified
-        if (instructions.length == 3) {
-            cardCount = Integer.parseInt(instructions[2]);
         }
 
         HashMap<String, Integer> maxMovableCards = deckInstance.getMaxMovableCards();

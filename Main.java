@@ -35,7 +35,20 @@ public class Main {
                     // Exit the game
                     System.out.println("Game terminated");
                     break;
-                } else if (userInput.toLowerCase().contains("move")) {
+                } else if(userInput.equalsIgnoreCase("game over")){
+                    //imitate the game being over
+                    testGameOver(deck);
+                    break;
+                } else if(userInput.toLowerCase().contains("check")){
+                    // Extract pile identifier from user input, e.g., "check p1"
+                    String[] parts = userInput.split(" ");
+                    if (parts.length > 1) {
+                        String pileIdentifier = parts[1]; // Get the pile identifier
+                        deck.showMaxMovableCardsForPile(pileIdentifier); // Display max movable cards for the specified pile
+                    } else {
+                        System.out.println("Please specify a pile to check, e.g., 'check p1'.");
+                    }
+                }else if (userInput.toLowerCase().contains("move")) {
                     // Handle card move command
                     String[] instructions = decipherMove(userInput.replace("move ", ""));
                     boolean success = moves.moveCard(instructions, deck.getAllPiles(), deck.getGenCards(), deck.getFoundationPiles(), deck);
@@ -110,11 +123,11 @@ public class Main {
         }
     
         // Check if all lane piles are empty
-        // for (LanePile lanePile : deck.getAllPiles()) {
-        //     if (!lanePile.isEmpty()) {
-        //         return false; // The game is not over if there's at least one card in the lane piles
-        //     }
-        // }
+        for (Stack<Card> pile : deck.getAllPiles()) {
+            if (!pile.isEmpty()) {
+                return false; // The game is not over if there's at least one card in the lane piles
+            }
+        }
     
         // If all checks are passed, return true, meaning the game is over
         return true;
@@ -139,4 +152,27 @@ public class Main {
 
         System.out.println("Current Score: " + score); // Show the current score
     }
+
+    // Test function to simulate a game-over scenario
+    public static void testGameOver(Deck deck) {
+        // Clear all cards from the general pile
+        deck.getGenCards().clear();
+
+        deck.clearAllPiles();
+
+        //Clear all foundation piles
+        for (Stack<Card> pile : deck.getAllPiles()) {
+            pile.clear();
+        }
+
+        // Check if the game is over
+        if (isGameOver(deck)) {
+            System.out.println("Game Over! All piles are empty.");
+        } else {
+            System.out.println("Game is still in progress.");
+        }
+    }
+
 }
+
+

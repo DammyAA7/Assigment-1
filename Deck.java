@@ -131,6 +131,15 @@ public class Deck {
         return piles;
     }
 
+    // Clears all piles in the game
+    public void clearAllPiles() {
+        if (piles != null) {
+            for (Stack<Card> pile : piles) {
+                pile.clear();
+            }
+        }
+    }
+
     // Gets the general card stack (deck)
     public Stack<Card> getGenCards() {
         return cards;
@@ -231,4 +240,34 @@ public class Deck {
     public Stack<Card>getCards() {
         return cards;
     }
+
+    // Method to show the maximum number of movable cards for a specified pile
+    public void showMaxMovableCardsForPile(String pileIdentifier) {
+        // Get the pile index from the identifier (e.g., "p1" -> index 0)
+        int pileIndex = Integer.parseInt(pileIdentifier.substring(1)) - 1;
+
+        // Check if the pile index is within the range of existing piles
+        if (pileIndex < 0 || pileIndex >= piles.size()) {
+            System.out.println("Invalid pile identifier.");
+            return;
+        }
+
+        // Get the specific pile
+        Stack<Card> pile = piles.get(pileIndex);
+
+        // Get the maximum number of movable cards for the specified pile
+        int maxMovable = maxMovableCards.getOrDefault(pileIdentifier, 0);
+
+        // Print the movable cards (up to the maxMovable value)
+        System.out.printf("Displaying up to %d movable card(s) from %s:\n", maxMovable, pileIdentifier);
+        for (int i = 0; i < maxMovable && i < pile.size(); i++) {
+            showCard(pile.get(pile.size() - 1 - i)); // Display cards from the top of the pile
+        }
+
+        // If no movable cards, indicate that
+        if (maxMovable == 0 || pile.isEmpty()) {
+            System.out.println("No movable cards available.");
+        }
+    }
+
 }
